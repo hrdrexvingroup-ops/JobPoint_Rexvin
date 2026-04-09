@@ -83,7 +83,7 @@ async function callGroqAPI(apiKey,prompt){
     const response=await fetch("https://api.groq.com/openai/v1/chat/completions",{
         method:"POST",
         headers:{"Authorization":"Bearer "+apiKey,"Content-Type":"application/json"},
-        body:JSON.stringify({model:"llama3-70b-8192",messages:[{role:"user",content:prompt}],temperature:0.3,max_tokens:4000})
+        body:JSON.stringify({model:"llama-3.3-70b-versatile",messages:[{role:"user",content:prompt}],temperature:0.3,max_tokens:4000})
     });
     if(!response.ok){
         const err=await response.json();
