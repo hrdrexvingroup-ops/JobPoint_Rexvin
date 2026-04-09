@@ -140,23 +140,61 @@ function displayResult(result){
     document.getElementById("resultKategori").textContent=result.kategori==="non-manajerial"?"Non Manajerial":"Manajerial";
     document.getElementById("totalPoint").textContent=result.totalPoin;
     document.getElementById("totalPointFoot").textContent=result.totalPoin;
+
     const tbody=document.getElementById("evalTableBody");
     tbody.innerHTML="";
+
     result.faktor.forEach(function(f,index){
         const tr=document.createElement("tr");
-        tr.innerHTML="<td>"+(f.no||index+1)+"</td><td><strong>"+f.nama+"</strong></td><td><span style='background:#1e3a5f;color:white;padding:3px 10px;border-radius:12px;font-size:0.8rem'>Level "+f.level+"</span></td><td><strong>"+f.nilai+"</strong></td><td>"+f.alasan+"</td>";
+        tr.innerHTML="<td>"+(f.no||index+1)+"</td>"+
+            "<td><strong>"+f.nama+"</strong></td>"+
+            "<td><span style='background:#1e3a5f;color:white;padding:3px 10px;border-radius:12px;font-size:0.8rem'>Level "+f.level+"</span></td>"+
+            "<td>"+
+                "<input type='number' "+
+                "id='nilai_"+index+"' "+
+                "value='"+f.nilai+"' "+
+                "style='width:80px;padding:6px;border:2px solid #2d6a9f;border-radius:8px;font-weight:bold;text-align:center;font-size:0.9rem' "+
+                "onchange='updateNilai("+index+",this.value)' "+
+                "/>"+
+            "</td>"+
+            "<td>"+f.alasan+"</td>";
         tbody.appendChild(tr);
     });
+
     if(result.situasiKhusus&&result.situasiKhusus.length>0){
-        result.situasiKhusus.forEach(function(s){
+        result.situasiKhusus.forEach(function(s,index){
             if(s.kondisi&&s.poin>0){
                 const tr=document.createElement("tr");
                 tr.style.background="#fff3cd";
-                tr.innerHTML="<td>+</td><td><strong>Situasi Khusus</strong></td><td>"+s.kondisi+"</td><td><strong>+"+s.poin+"</strong></td><td>Tambahan poin situasi khusus</td>";
+                tr.innerHTML="<td>+</td>"+
+                    "<td><strong>Situasi Khusus</strong></td>"+
+                    "<td>"+s.kondisi+"</td>"+
+                    "<td>"+
+                        "<input type='number' "+
+                        "id='situasi_"+index+"' "+
+                        "value='"+s.poin+"' "+
+                        "style='width:80px;padding:6px;border:2px solid #ffc107;border-radius:8px;font-weight:bold;text-align:center;font-size:0.9rem' "+
+                        "onchange='updateSituasi("+index+",this.value)' "+
+                        "/>"+
+                    "</td>"+
+                    "<td>Tambahan poin situasi khusus</td>";
                 tbody.appendChild(tr);
             }
         });
     }
+
+    // TOMBOL RECALCULATE
+    const tfootRow=document.querySelector(".total-row");
+    if(tfootRow){
+        tfootRow.innerHTML="<td colspan='3'><strong>TOTAL POIN</strong></td>"+
+            "<td><strong id='totalPointFoot'>"+result.totalPoin+"</strong></td>"+
+            "<td>"+
+                "<button onclick='recalculate()' "+
+                "style='background:linear-gradient(135deg,#27ae60,#2ecc71);color:white;border:none;padding:8px 16px;border-radius:8px;cursor:pointer;font-weight:bold;font-size:0.85rem'>"+
+                "🔄 Hitung Ulang</button>"+
+            "</td>";
+    }
+
     const g=result.gradeInfo;
     document.getElementById("resultGrade").textContent=g.grade;
     document.getElementById("resultLevel").textContent=g.level;
@@ -165,8 +203,65 @@ function displayResult(result){
     document.getElementById("resultGajiMid").textContent=formatCurrency(g.gajiMid);
     document.getElementById("resultGajiMax").textContent=formatCurrency(g.gajiMax);
     document.getElementById("notesContent").innerHTML="<p>"+result.catatan+"</p>";
+
     document.getElementById("card-result").style.display="block";
     document.getElementById("card-result").scrollIntoView({behavior:"smooth"});
+}
+
+function updateNilai(index,newValue){
+    if(currentResult&&currentResult.faktor[index]){
+        currentResult.faktor[index].nilai=parseInt(newValue)||0;
+    }
+}
+
+function updateSituasi(index,newValue){
+    if(currentResult&&currentResult.situasiKhusus[index]){
+        currentResult.situasiKhusus[index].poin=parseInt(newValue)||0;
+    }
+}
+
+function recalculate(){
+    if(!currentResult)return;
+
+    // HITUNG ULANG TOTAL
+    let totalPoin=currentResult.faktor.reduce(function(sum,f){
+        return sum+f.nilai;
+    },0);
+
+    if(currentResult.situasiKhusus&&currentResult.situasiKhusus.length>0){
+        currentResult.situasiKhusus.forEach(function(s){
+            totalPoin+=s.poin||0;
+        });
+    }
+
+    currentResult.totalPoin=totalPoin;
+
+    // UPDATE GRADE
+    const gradeInfo=getGradeByPoint(totalPoin);
+    currentResult.gradeInfo=gradeInfo;
+
+    // UPDATE TAMPILAN TOTAL
+    document.getElementById("totalPoint").textContent=totalPoin;
+    document.getElementById("totalPointFoot").textContent=totalPoin;
+
+    // UPDATE GRADE & SALARY
+    document.getElementById("resultGrade").textContent=gradeInfo.grade;
+    document.getElementById("resultLevel").textContent=gradeInfo.level;
+    document.getElementById("resultRangePoint").textContent=gradeInfo.minPoint+" - "+gradeInfo.maxPoint;
+    document.getElementById("resultGajiMin").textContent=formatCurrency(gradeInfo.gajiMin);
+    document.getElementById("resultGajiMid").textContent=formatCurrency(gradeInfo.gajiMid);
+    document.getElementById("resultGajiMax").textContent=formatCurrency(gradeInfo.gajiMax);
+
+    // ANIMASI FEEDBACK
+    const scoreCircle=document.getElementById("totalPoint");
+    scoreCircle.style.transform="scale(1.3)";
+    scoreCircle.style.transition="transform 0.3s";
+    setTimeout(function(){
+        scoreCircle.style.transform="scale(1)";
+    },300);
+
+    // NOTIFIKASI
+    alert("✅ Total Poin berhasil dihitung ulang!\n\nTotal Poin: "+totalPoin+"\nGrade: "+gradeInfo.grade+"\nLevel: "+gradeInfo.level);
 }
 
 function exportToExcel(){
