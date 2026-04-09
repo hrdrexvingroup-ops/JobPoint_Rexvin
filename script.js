@@ -1,6 +1,4 @@
-// =============================================
 // DATA GRADE & SALARY
-// =============================================
 const gradeData = [
     { grade: 'VI-B', level: 'Director/C-Level', minPoint: 4830, maxPoint: 6000, gajiMin: 51759000, gajiMax: 64296000 },
     { grade: 'VI-A', level: 'Director/C-Level', minPoint: 4401, maxPoint: 5460, gajiMin: 47161000, gajiMax: 58510000 },
@@ -18,15 +16,11 @@ const gradeData = [
     { grade: 'I-A', level: 'Jr. Clerk', minPoint: 300, maxPoint: 480, gajiMin: 1447000, gajiMax: 5358000 }
 ];
 
-// =============================================
 // VARIABEL GLOBAL
-// =============================================
 let currentResult = null;
 let evaluationHistory = JSON.parse(localStorage.getItem('evalHistory') || '[]');
 
-// =============================================
-// LOAD API KEY TERSIMPAN
-// =============================================
+// LOAD SAAT HALAMAN DIBUKA
 window.onload = function() {
     const savedKey = localStorage.getItem('groqApiKey');
     if (savedKey) {
@@ -36,9 +30,7 @@ window.onload = function() {
     loadHistory();
 };
 
-// =============================================
-// FUNGSI API KEY
-// =============================================
+// TOGGLE API KEY
 function toggleApiKey() {
     const input = document.getElementById('apiKey');
     const icon = document.getElementById('eyeIcon');
@@ -51,6 +43,7 @@ function toggleApiKey() {
     }
 }
 
+// SIMPAN API KEY
 function saveApiKey() {
     const apiKey = document.getElementById('apiKey').value.trim();
     if (!apiKey) {
@@ -65,6 +58,7 @@ function saveApiKey() {
     showApiStatus('success', '✅ API Key berhasil disimpan!');
 }
 
+// TAMPILKAN STATUS API
 function showApiStatus(type, message) {
     const status = document.getElementById('apiStatus');
     status.style.display = 'inline-flex';
@@ -72,13 +66,12 @@ function showApiStatus(type, message) {
     status.innerHTML = message;
 }
 
+// GET API KEY
 function getApiKey() {
     return localStorage.getItem('groqApiKey') || document.getElementById('apiKey').value.trim();
 }
 
-// =============================================
 // FUNGSI UTAMA ANALISIS
-// =============================================
 async function analyzeJob() {
     const apiKey = getApiKey();
     const namaJabatan = document.getElementById('namaJabatan').value.trim();
@@ -103,24 +96,21 @@ async function analyzeJob() {
         saveToHistory(result);
     } catch (error) {
         alert('❌ Terjadi kesalahan: ' + error.message);
+        console.error(error);
     } finally {
         document.getElementById('loadingContainer').style.display = 'none';
         document.getElementById('btnAnalyze').disabled = false;
     }
 }
 
-// =============================================
 // BUILD PROMPT
-// =============================================
 function buildPrompt(kategori, namaJabatan, unitKerja, uraian) {
     if (kategori === 'non-manajerial') {
         return `Anda adalah HRD Manager ahli Job Evaluation FES Non Manajerial.
 Analisis jabatan berikut dan berikan penilaian FES.
-
 JABATAN: ${namaJabatan}
 UNIT KERJA: ${unitKerja}
 URAIAN: ${uraian}
-
 NILAI FES NON MANAJERIAL:
 F1-KnowHow: 1-1(50),1-2(200),1-3(350),1-4(550),1-5(750),1-6(950),1-7(1250),1-8(1550),1-9(1850)
 F2-Pengawasan: 2-1(25),2-2(125),2-3(275),2-4(450),2-5(650)
@@ -131,42 +121,37 @@ F6-HubPersonal: 6-1(10),6-2(25),6-3(60),6-4(110)
 F7-TujuanHub: 7-1(20),7-2(50),7-3(120),7-4(220)
 F8-TuntutanFisik: 8-1(5),8-2(20),8-3(50)
 F9-LingkunganKerja: 9-1(5),9-2(20),9-3(50)
-
-Berikan response dalam format JSON seperti ini:
+Berikan response dalam format JSON:
 {
   "faktor": [
-    {"no": 1, "nama": "Know How / Pengetahuan & Keahlian", "level": "1-5", "nilai": 750, "alasan": "alasan lengkap disini"},
-    {"no": 2, "nama": "Pengendalian & Pengawasan", "level": "2-3", "nilai": 275, "alasan": "alasan lengkap disini"},
-    {"no": 3, "nama": "Pedoman", "level": "3-3", "nilai": 275, "alasan": "alasan lengkap disini"},
-    {"no": 4, "nama": "Kompleksitas", "level": "4-3", "nilai": 150, "alasan": "alasan lengkap disini"},
-    {"no": 5, "nama": "Ruang Lingkup & Dampak", "level": "5-3", "nilai": 150, "alasan": "alasan lengkap disini"},
-    {"no": 6, "nama": "Hubungan Personal", "level": "6-3", "nilai": 60, "alasan": "alasan lengkap disini"},
-    {"no": 7, "nama": "Tujuan Hubungan", "level": "7-2", "nilai": 50, "alasan": "alasan lengkap disini"},
-    {"no": 8, "nama": "Tuntutan Fisik", "level": "8-2", "nilai": 20, "alasan": "alasan lengkap disini"},
-    {"no": 9, "nama": "Lingkungan Kerja", "level": "9-2", "nilai": 20, "alasan": "alasan lengkap disini"}
+    {"no": 1, "nama": "Know How / Pengetahuan & Keahlian", "level": "1-5", "nilai": 750, "alasan": "alasan lengkap"},
+    {"no": 2, "nama": "Pengendalian & Pengawasan", "level": "2-3", "nilai": 275, "alasan": "alasan lengkap"},
+    {"no": 3, "nama": "Pedoman", "level": "3-3", "nilai": 275, "alasan": "alasan lengkap"},
+    {"no": 4, "nama": "Kompleksitas", "level": "4-3", "nilai": 150, "alasan": "alasan lengkap"},
+    {"no": 5, "nama": "Ruang Lingkup & Dampak", "level": "5-3", "nilai": 150, "alasan": "alasan lengkap"},
+    {"no": 6, "nama": "Hubungan Personal", "level": "6-3", "nilai": 60, "alasan": "alasan lengkap"},
+    {"no": 7, "nama": "Tujuan Hubungan", "level": "7-2", "nilai": 50, "alasan": "alasan lengkap"},
+    {"no": 8, "nama": "Tuntutan Fisik", "level": "8-2", "nilai": 20, "alasan": "alasan lengkap"},
+    {"no": 9, "nama": "Lingkungan Kerja", "level": "9-2", "nilai": 20, "alasan": "alasan lengkap"}
   ],
-  "catatan": "catatan dan rekomendasi disini"
+  "catatan": "catatan dan rekomendasi"
 }
-Pastikan nilai yang digunakan SESUAI dengan tabel nilai FES diatas.
-Berikan HANYA JSON, tanpa teks lain.`;
+Berikan HANYA JSON tanpa teks lain.`;
     } else {
         return `Anda adalah HRD Manager ahli Job Evaluation FES Manajerial.
 Analisis jabatan berikut dan berikan penilaian FES.
-
 JABATAN: ${namaJabatan}
 UNIT KERJA: ${unitKerja}
 URAIAN: ${uraian}
-
 NILAI FES MANAJERIAL:
 F1-RuangLingkup: 1-2(660),1-2+(995),1-3(1250),1-4(1495),1-5(1665)
 F2-Wewenang: 2-1(505),2-2(875),2-3(1015)
 F3-Koordinasi: 3-1(560),3-2(995),3-3(1250),3-4(1495),3-5(1665)
-F4-HubPersonal(SifatxTujuan):
-  Sifat1xTujuan1(100),Sifat1xTujuan2(185),Sifat1xTujuan3(230),Sifat1xTujuan4(270)
-  Sifat2xTujuan1(175),Sifat2xTujuan2(260),Sifat2xTujuan3(305),Sifat2xTujuan4(345)
-  Sifat3xTujuan1(245),Sifat3xTujuan2(330),Sifat3xTujuan3(375),Sifat3xTujuan4(415)
-  Sifat4xTujuan1(315),Sifat4xTujuan2(400),Sifat4xTujuan3(445),Sifat4xTujuan4(485)
-
+F4-HubPersonal:
+Sifat1xTujuan1(100),Sifat1xTujuan2(185),Sifat1xTujuan3(230),Sifat1xTujuan4(270)
+Sifat2xTujuan1(175),Sifat2xTujuan2(260),Sifat2xTujuan3(305),Sifat2xTujuan4(345)
+Sifat3xTujuan1(245),Sifat3xTujuan2(330),Sifat3xTujuan3(375),Sifat3xTujuan4(415)
+Sifat4xTujuan1(315),Sifat4xTujuan2(400),Sifat4xTujuan3(445),Sifat4xTujuan4(485)
 Berikan response dalam format JSON:
 {
   "faktor": [
@@ -176,17 +161,15 @@ Berikan response dalam format JSON:
     {"no": 4, "nama": "Hubungan Personal", "level": "Sifat2xTujuan2", "nilai": 260, "alasan": "alasan lengkap"}
   ],
   "situasiKhusus": [
-    {"kondisi": "nama kondisi khusus jika ada", "poin": 50}
+    {"kondisi": "nama kondisi jika ada", "poin": 50}
   ],
   "catatan": "catatan dan rekomendasi"
 }
-Berikan HANYA JSON, tanpa teks lain.`;
+Berikan HANYA JSON tanpa teks lain.`;
     }
 }
 
-// =============================================
 // CALL GROQ API
-// =============================================
 async function callGroqAPI(apiKey, prompt) {
     const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
         method: 'POST',
@@ -211,35 +194,22 @@ async function callGroqAPI(apiKey, prompt) {
     return data.choices[0].message.content;
 }
 
-// =============================================
 // PARSE AI RESPONSE
-// =============================================
 function parseAIResponse(responseText, namaJabatan, unitKerja, kategori) {
     try {
         const jsonMatch = responseText.match(/\{[\s\S]*\}/);
         if (!jsonMatch) throw new Error('Format response tidak valid');
-        
         const parsed = JSON.parse(jsonMatch[0]);
         let totalPoin = parsed.faktor.reduce((sum, f) => sum + f.nilai, 0);
-        
-        if
-          // Tambah situasi khusus jika manajerial
         if (kategori === 'manajerial' && parsed.situasiKhusus) {
-            parsed.situasiKhusus.forEach(s => {
-                totalPoin += s.poin || 0;
-            });
+            parsed.situasiKhusus.forEach(s => { totalPoin += s.poin || 0; });
         }
-
         const gradeInfo = getGradeByPoint(totalPoin);
-
         return {
-            namaJabatan,
-            unitKerja,
-            kategori,
+            namaJabatan, unitKerja, kategori,
             faktor: parsed.faktor,
             situasiKhusus: parsed.situasiKhusus || [],
-            totalPoin,
-            gradeInfo,
+            totalPoin, gradeInfo,
             catatan: parsed.catatan || '',
             tanggal: new Date().toLocaleDateString('id-ID')
         };
@@ -248,12 +218,9 @@ function parseAIResponse(responseText, namaJabatan, unitKerja, kategori) {
     }
 }
 
-// =============================================
-// GET GRADE BY POINT
-// =============================================
+// GET GRADE BY POINT - FIXED
 function getGradeByPoint(totalPoin) {
     let bestMatch = null;
-    
     for (const grade of gradeData) {
         if (totalPoin >= grade.minPoint && totalPoin <= grade.maxPoint) {
             if (!bestMatch || grade.minPoint > bestMatch.minPoint) {
@@ -261,7 +228,6 @@ function getGradeByPoint(totalPoin) {
             }
         }
     }
-    
     if (!bestMatch) {
         if (totalPoin < 300) {
             bestMatch = gradeData[gradeData.length - 1];
@@ -269,9 +235,7 @@ function getGradeByPoint(totalPoin) {
             bestMatch = gradeData[0];
         }
     }
-    
     const gajiMid = Math.round((bestMatch.gajiMin + bestMatch.gajiMax) / 2);
-    
     return {
         grade: bestMatch.grade,
         level: bestMatch.level,
@@ -282,10 +246,7 @@ function getGradeByPoint(totalPoin) {
         gajiMid: gajiMid
     };
 }
-
-// =============================================
 // FORMAT CURRENCY
-// =============================================
 function formatCurrency(amount) {
     return new Intl.NumberFormat('id-ID', {
         style: 'currency',
@@ -294,11 +255,8 @@ function formatCurrency(amount) {
     }).format(amount);
 }
 
-// =============================================
 // DISPLAY RESULT
-// =============================================
 function displayResult(result) {
-    // Info jabatan
     document.getElementById('resultNamaJabatan').textContent = result.namaJabatan;
     document.getElementById('resultUnitKerja').textContent = result.unitKerja;
     document.getElementById('resultKategori').textContent = 
@@ -306,7 +264,6 @@ function displayResult(result) {
     document.getElementById('totalPoint').textContent = result.totalPoin;
     document.getElementById('totalPointFoot').textContent = result.totalPoin;
 
-    // Tabel faktor
     const tbody = document.getElementById('evalTableBody');
     tbody.innerHTML = '';
     
@@ -315,14 +272,13 @@ function displayResult(result) {
         tr.innerHTML = `
             <td>${f.no || index + 1}</td>
             <td><strong>${f.nama}</strong></td>
-            <td><span class="level-badge">Level ${f.level}</span></td>
+            <td><span style="background:#1e3a5f;color:white;padding:3px 10px;border-radius:12px;font-size:0.8rem">Level ${f.level}</span></td>
             <td><strong>${f.nilai}</strong></td>
             <td>${f.alasan}</td>
         `;
         tbody.appendChild(tr);
     });
 
-    // Situasi khusus jika ada
     if (result.situasiKhusus && result.situasiKhusus.length > 0) {
         result.situasiKhusus.forEach(s => {
             if (s.kondisi && s.poin > 0) {
@@ -340,7 +296,6 @@ function displayResult(result) {
         });
     }
 
-    // Grade & Salary
     const g = result.gradeInfo;
     document.getElementById('resultGrade').textContent = g.grade;
     document.getElementById('resultLevel').textContent = g.level;
@@ -348,25 +303,17 @@ function displayResult(result) {
     document.getElementById('resultGajiMin').textContent = formatCurrency(g.gajiMin);
     document.getElementById('resultGajiMid').textContent = formatCurrency(g.gajiMid);
     document.getElementById('resultGajiMax').textContent = formatCurrency(g.gajiMax);
+    document.getElementById('notesContent').innerHTML = `<p>${result.catatan}</p>`;
 
-    // Catatan
-    document.getElementById('notesContent').innerHTML = 
-        `<p>${result.catatan}</p>`;
-
-    // Tampilkan hasil
     document.getElementById('card-result').style.display = 'block';
     document.getElementById('card-result').scrollIntoView({ behavior: 'smooth' });
 }
 
-// =============================================
 // EXPORT KE EXCEL
-// =============================================
 function exportToExcel() {
     if (!currentResult) return;
-    
     const r = currentResult;
     const g = r.gradeInfo;
-    
     const wsData = [
         ['JOB EVALUATION - FACTOR EVALUATION SYSTEM (FES)'],
         [''],
@@ -378,11 +325,9 @@ function exportToExcel() {
         ['DETAIL PENILAIAN PER FAKTOR'],
         ['No', 'Faktor', 'Level', 'Nilai', 'Alasan Penilaian'],
     ];
-
     r.faktor.forEach((f, i) => {
         wsData.push([i + 1, f.nama, `Level ${f.level}`, f.nilai, f.alasan]);
     });
-
     if (r.situasiKhusus && r.situasiKhusus.length > 0) {
         r.situasiKhusus.forEach(s => {
             if (s.kondisi && s.poin > 0) {
@@ -390,7 +335,6 @@ function exportToExcel() {
             }
         });
     }
-
     wsData.push(['', '', 'TOTAL POIN', r.totalPoin, '']);
     wsData.push(['']);
     wsData.push(['HASIL PENEMPATAN GRADE & GAJI']);
@@ -406,70 +350,48 @@ function exportToExcel() {
 
     const wb = XLSX.utils.book_new();
     const ws = XLSX.utils.aoa_to_sheet(wsData);
-
     ws['!cols'] = [
-        { wch: 5 },
-        { wch: 35 },
-        { wch: 15 },
-        { wch: 10 },
-        { wch: 60 }
+        { wch: 5 }, { wch: 35 }, { wch: 15 }, { wch: 10 }, { wch: 60 }
     ];
-
     XLSX.utils.book_append_sheet(wb, ws, 'Job Evaluation');
     XLSX.writeFile(wb, `JobEval_${r.namaJabatan}_${r.tanggal}.xlsx`);
 }
 
-// =============================================
 // EXPORT SEMUA KE EXCEL
-// =============================================
 function exportAllToExcel() {
     if (evaluationHistory.length === 0) {
         alert('Belum ada data evaluasi!');
         return;
     }
-
     const wsData = [
         ['REKAP JOB EVALUATION - SEMUA JABATAN'],
         [''],
-        ['No', 'Nama Jabatan', 'Unit Kerja', 'Kategori', 'Total Poin', 
-         'Grade', 'Level Jabatan', 'Range Point', 
+        ['No', 'Nama Jabatan', 'Unit Kerja', 'Kategori', 'Total Poin',
+         'Grade', 'Level Jabatan', 'Range Point',
          'Gaji Min', 'Gaji Mid', 'Gaji Max', 'Tanggal']
     ];
-
     evaluationHistory.forEach((r, i) => {
         const g = r.gradeInfo;
         wsData.push([
-            i + 1,
-            r.namaJabatan,
-            r.unitKerja,
+            i + 1, r.namaJabatan, r.unitKerja,
             r.kategori === 'non-manajerial' ? 'Non Manajerial' : 'Manajerial',
-            r.totalPoin,
-            g.grade,
-            g.level,
+            r.totalPoin, g.grade, g.level,
             `${g.minPoint} - ${g.maxPoint}`,
-            g.gajiMin,
-            g.gajiMid,
-            g.gajiMax,
-            r.tanggal
+            g.gajiMin, g.gajiMid, g.gajiMax, r.tanggal
         ]);
     });
-
     const wb = XLSX.utils.book_new();
     const ws = XLSX.utils.aoa_to_sheet(wsData);
-
     ws['!cols'] = [
         { wch: 5 }, { wch: 30 }, { wch: 25 }, { wch: 15 },
         { wch: 12 }, { wch: 10 }, { wch: 25 }, { wch: 15 },
         { wch: 18 }, { wch: 18 }, { wch: 18 }, { wch: 15 }
     ];
-
     XLSX.utils.book_append_sheet(wb, ws, 'Rekap Semua Jabatan');
     XLSX.writeFile(wb, `Rekap_JobEval_${new Date().toLocaleDateString('id-ID')}.xlsx`);
 }
 
-// =============================================
-// HISTORY FUNCTIONS
-// =============================================
+// SAVE TO HISTORY
 function saveToHistory(result) {
     evaluationHistory.unshift(result);
     if (evaluationHistory.length > 50) {
@@ -479,18 +401,16 @@ function saveToHistory(result) {
     loadHistory();
 }
 
+// LOAD HISTORY
 function loadHistory() {
     const tbody = document.getElementById('historyTableBody');
     if (!tbody) return;
-
     if (evaluationHistory.length === 0) {
         document.getElementById('card-history').style.display = 'none';
         return;
     }
-
     document.getElementById('card-history').style.display = 'block';
     tbody.innerHTML = '';
-
     evaluationHistory.forEach((r, i) => {
         const g = r.gradeInfo;
         const tr = document.createElement('tr');
@@ -500,7 +420,7 @@ function loadHistory() {
             <td>${r.unitKerja}</td>
             <td>${r.kategori === 'non-manajerial' ? 'Non Manajerial' : 'Manajerial'}</td>
             <td><strong>${r.totalPoin}</strong></td>
-            <td><span class="grade-badge">${g.grade}</span></td>
+            <td><span style="background:#1e3a5f;color:white;padding:3px 10px;border-radius:12px;font-size:0.8rem">${g.grade}</span></td>
             <td>${formatCurrency(g.gajiMin)}</td>
             <td>${formatCurrency(g.gajiMax)}</td>
             <td>
@@ -516,12 +436,14 @@ function loadHistory() {
     });
 }
 
+// VIEW HISTORY
 function viewHistory(index) {
     const result = evaluationHistory[index];
     currentResult = result;
     displayResult(result);
 }
 
+// DELETE HISTORY
 function deleteHistory(index) {
     if (confirm('Hapus data ini?')) {
         evaluationHistory.splice(index, 1);
@@ -530,6 +452,7 @@ function deleteHistory(index) {
     }
 }
 
+// CLEAR HISTORY
 function clearHistory() {
     if (confirm('Hapus semua riwayat evaluasi?')) {
         evaluationHistory = [];
@@ -538,9 +461,7 @@ function clearHistory() {
     }
 }
 
-// =============================================
 // RESET FORM
-// =============================================
 function resetForm() {
     document.getElementById('namaJabatan').value = '';
     document.getElementById('unitKerja').value = '';
@@ -548,4 +469,5 @@ function resetForm() {
     document.querySelector('input[name="kategori"][value="non-manajerial"]').checked = true;
     document.getElementById('card-result').style.display = 'none';
     window.scrollTo({ top: 0, behavior: 'smooth' });
-}          
+}
+            
