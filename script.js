@@ -19,161 +19,22 @@ const gradeData = [
 ];
 
 // =============================================
-// PANDUAN FES NON MANAJERIAL
-// =============================================
-const fesNonManajerial = {
-    faktor1: {
-        nama: 'Know How / Pengetahuan & Keahlian',
-        levels: [
-            { level: '1-1', nilai: 50 },
-            { level: '1-2', nilai: 200 },
-            { level: '1-3', nilai: 350 },
-            { level: '1-4', nilai: 550 },
-            { level: '1-5', nilai: 750 },
-            { level: '1-6', nilai: 950 },
-            { level: '1-7', nilai: 1250 },
-            { level: '1-8', nilai: 1550 },
-            { level: '1-9', nilai: 1850 }
-        ]
-    },
-    faktor2: {
-        nama: 'Pengendalian & Pengawasan',
-        levels: [
-            { level: '2-1', nilai: 25 },
-            { level: '2-2', nilai: 125 },
-            { level: '2-3', nilai: 275 },
-            { level: '2-4', nilai: 450 },
-            { level: '2-5', nilai: 650 }
-        ]
-    },
-    faktor3: {
-        nama: 'Pedoman',
-        levels: [
-            { level: '3-1', nilai: 25 },
-            { level: '3-2', nilai: 125 },
-            { level: '3-3', nilai: 275 },
-            { level: '3-4', nilai: 450 },
-            { level: '3-5', nilai: 650 }
-        ]
-    },
-    faktor4: {
-        nama: 'Kompleksitas',
-        levels: [
-            { level: '4-1', nilai: 25 },
-            { level: '4-2', nilai: 75 },
-            { level: '4-3', nilai: 150 },
-            { level: '4-4', nilai: 225 },
-            { level: '4-5', nilai: 325 },
-            { level: '4-6', nilai: 450 }
-        ]
-    },
-    faktor5: {
-        nama: 'Ruang Lingkup & Dampak',
-        levels: [
-            { level: '5-1', nilai: 25 },
-            { level: '5-2', nilai: 75 },
-            { level: '5-3', nilai: 150 },
-            { level: '5-4', nilai: 225 },
-            { level: '5-5', nilai: 325 },
-            { level: '5-6', nilai: 450 }
-        ]
-    },
-    faktor6: {
-        nama: 'Hubungan Personal',
-        levels: [
-            { level: '6-1', nilai: 10 },
-            { level: '6-2', nilai: 25 },
-            { level: '6-3', nilai: 60 },
-            { level: '6-4', nilai: 110 }
-        ]
-    },
-    faktor7: {
-        nama: 'Tujuan Hubungan',
-        levels: [
-            { level: '7-1', nilai: 20 },
-            { level: '7-2', nilai: 50 },
-            { level: '7-3', nilai: 120 },
-            { level: '7-4', nilai: 220 }
-        ]
-    },
-    faktor8: {
-        nama: 'Tuntutan Fisik',
-        levels: [
-            { level: '8-1', nilai: 5 },
-            { level: '8-2', nilai: 20 },
-            { level: '8-3', nilai: 50 }
-        ]
-    },
-    faktor9: {
-        nama: 'Lingkungan Kerja',
-        levels: [
-            { level: '9-1', nilai: 5 },
-            { level: '9-2', nilai: 20 },
-            { level: '9-3', nilai: 50 }
-        ]
-    }
-};
-
-// =============================================
-// PANDUAN FES MANAJERIAL
-// =============================================
-const fesManajerial = {
-    faktor1: {
-        nama: 'Ruang Lingkup Program & Dampak',
-        levels: [
-            { level: '1-2', nilai: 660 },
-            { level: '1-2+', nilai: 995 },
-            { level: '1-3', nilai: 1250 },
-            { level: '1-4', nilai: 1495 },
-            { level: '1-5', nilai: 1665 }
-        ]
-    },
-    faktor2: {
-        nama: 'Wewenang Supervisi & Manajerial',
-        levels: [
-            { level: '2-1', nilai: 505 },
-            { level: '2-2', nilai: 875 },
-            { level: '2-3', nilai: 1015 }
-        ]
-    },
-    faktor3: {
-        nama: 'Koordinasi & Pengintegrasian',
-        levels: [
-            { level: '3-1', nilai: 560 },
-            { level: '3-2', nilai: 995 },
-            { level: '3-3', nilai: 1250 },
-            { level: '3-4', nilai: 1495 },
-            { level: '3-5', nilai: 1665 }
-        ]
-    },
-    faktor4: {
-        nama: 'Hubungan Personal',
-        levels: [
-            { level: '4-L1T1', nilai: 100 },
-            { level: '4-L1T2', nilai: 185 },
-            { level: '4-L1T3', nilai: 230 },
-            { level: '4-L1T4', nilai: 270 },
-            { level: '4-L2T1', nilai: 175 },
-            { level: '4-L2T2', nilai: 260 },
-            { level: '4-L2T3', nilai: 305 },
-            { level: '4-L2T4', nilai: 345 },
-            { level: '4-L3T1', nilai: 245 },
-            { level: '4-L3T2', nilai: 330 },
-            { level: '4-L3T3', nilai: 375 },
-            { level: '4-L3T4', nilai: 415 },
-            { level: '4-L4T1', nilai: 315 },
-            { level: '4-L4T2', nilai: 400 },
-            { level: '4-L4T3', nilai: 445 },
-            { level: '4-L4T4', nilai: 485 }
-        ]
-    }
-};
-
-// =============================================
 // VARIABEL GLOBAL
 // =============================================
 let currentResult = null;
 let evaluationHistory = JSON.parse(localStorage.getItem('evalHistory') || '[]');
+
+// =============================================
+// LOAD API KEY TERSIMPAN
+// =============================================
+window.onload = function() {
+    const savedKey = localStorage.getItem('groqApiKey');
+    if (savedKey) {
+        document.getElementById('apiKey').value = savedKey;
+        showApiStatus('success', '✅ API Key tersimpan');
+    }
+    loadHistory();
+};
 
 // =============================================
 // FUNGSI API KEY
@@ -197,7 +58,7 @@ function saveApiKey() {
         return;
     }
     if (!apiKey.startsWith('gsk_')) {
-        showApiStatus('error', '❌ Format API Key tidak valid! Harus dimulai dengan gsk_');
+        showApiStatus('error', '❌ Format API Key tidak valid!');
         return;
     }
     localStorage.setItem('groqApiKey', apiKey);
@@ -225,37 +86,23 @@ async function analyzeJob() {
     const uraian = document.getElementById('uraianJabatan').value.trim();
     const kategori = document.querySelector('input[name="kategori"]:checked').value;
 
-    // VALIDASI
-    if (!apiKey) {
-        alert('⚠️ Silakan masukkan API Key terlebih dahulu!');
-        return;
-    }
-    if (!namaJabatan) {
-        alert('⚠️ Silakan masukkan Nama Jabatan!');
-        return;
-    }
-    if (!uraian) {
-        alert('⚠️ Silakan masukkan Uraian Jabatan!');
-        return;
-    }
+    if (!apiKey) { alert('⚠️ Silakan masukkan API Key!'); return; }
+    if (!namaJabatan) { alert('⚠️ Silakan masukkan Nama Jabatan!'); return; }
+    if (!uraian) { alert('⚠️ Silakan masukkan Uraian Jabatan!'); return; }
 
-    // TAMPILKAN LOADING
     document.getElementById('loadingContainer').style.display = 'block';
     document.getElementById('card-result').style.display = 'none';
     document.getElementById('btnAnalyze').disabled = true;
 
     try {
         const prompt = buildPrompt(kategori, namaJabatan, unitKerja, uraian);
-        const response = await callGroqAPI(apiKey, prompt);
-        const result = parseAIResponse(response, namaJabatan, unitKerja, kategori);
-        
+        const responseText = await callGroqAPI(apiKey, prompt);
+        const result = parseAIResponse(responseText, namaJabatan, unitKerja, kategori);
         currentResult = result;
         displayResult(result);
         saveToHistory(result);
-        
     } catch (error) {
         alert('❌ Terjadi kesalahan: ' + error.message);
-        console.error(error);
     } finally {
         document.getElementById('loadingContainer').style.display = 'none';
         document.getElementById('btnAnalyze').disabled = false;
@@ -267,20 +114,438 @@ async function analyzeJob() {
 // =============================================
 function buildPrompt(kategori, namaJabatan, unitKerja, uraian) {
     if (kategori === 'non-manajerial') {
-        return `Anda adalah HRD Manager ahli dalam Job Evaluation menggunakan metode Factor Evaluation System (FES) Non Manajerial.
-
-Analisis uraian jabatan berikut dan berikan penilaian untuk setiap faktor FES Non Manajerial.
+        return `Anda adalah HRD Manager ahli Job Evaluation FES Non Manajerial.
+Analisis jabatan berikut dan berikan penilaian FES.
 
 JABATAN: ${namaJabatan}
 UNIT KERJA: ${unitKerja}
-URAIAN JABATAN:
-${uraian}
+URAIAN: ${uraian}
 
-PANDUAN NILAI FES NON MANAJERIAL:
-Faktor 1 - Know How: Level 1-1(50), 1-2(200), 1-3(350), 1-4(550), 1-5(750), 1-6(950), 1-7(1250), 1-8(1550), 1-9(1850)
-Faktor 2 - Pengendalian & Pengawasan: Level 2-1(25), 2-2(125), 2-3(275), 2-4(450), 2-5(650)
-Faktor 3 - Pedoman: Level 3-1(25), 3-2(125), 3-3(275), 3-4(450), 3-5(650)
-Faktor 4 - Kompleksitas: Level 4-1(25), 4-2(75), 4-3(150), 4-4(225), 4-5(325), 4-6(450)
-Faktor 5 - Ruang Lingkup & Dampak: Level 5-1(25), 5-2(75), 5-3(150), 5-4(225), 5-5(325), 5-6(450)
-Faktor 6 - Hubungan Personal: Level 6-1(10), 6-2(25), 6-3(60), 6-4(110)
-Faktor 7 - Tujuan Hubungan
+NILAI FES NON MANAJERIAL:
+F1-KnowHow: 1-1(50),1-2(200),1-3(350),1-4(550),1-5(750),1-6(950),1-7(1250),1-8(1550),1-9(1850)
+F2-Pengawasan: 2-1(25),2-2(125),2-3(275),2-4(450),2-5(650)
+F3-Pedoman: 3-1(25),3-2(125),3-3(275),3-4(450),3-5(650)
+F4-Kompleksitas: 4-1(25),4-2(75),4-3(150),4-4(225),4-5(325),4-6(450)
+F5-RuangLingkup: 5-1(25),5-2(75),5-3(150),5-4(225),5-5(325),5-6(450)
+F6-HubPersonal: 6-1(10),6-2(25),6-3(60),6-4(110)
+F7-TujuanHub: 7-1(20),7-2(50),7-3(120),7-4(220)
+F8-TuntutanFisik: 8-1(5),8-2(20),8-3(50)
+F9-LingkunganKerja: 9-1(5),9-2(20),9-3(50)
+
+Berikan response dalam format JSON seperti ini:
+{
+  "faktor": [
+    {"no": 1, "nama": "Know How / Pengetahuan & Keahlian", "level": "1-5", "nilai": 750, "alasan": "alasan lengkap disini"},
+    {"no": 2, "nama": "Pengendalian & Pengawasan", "level": "2-3", "nilai": 275, "alasan": "alasan lengkap disini"},
+    {"no": 3, "nama": "Pedoman", "level": "3-3", "nilai": 275, "alasan": "alasan lengkap disini"},
+    {"no": 4, "nama": "Kompleksitas", "level": "4-3", "nilai": 150, "alasan": "alasan lengkap disini"},
+    {"no": 5, "nama": "Ruang Lingkup & Dampak", "level": "5-3", "nilai": 150, "alasan": "alasan lengkap disini"},
+    {"no": 6, "nama": "Hubungan Personal", "level": "6-3", "nilai": 60, "alasan": "alasan lengkap disini"},
+    {"no": 7, "nama": "Tujuan Hubungan", "level": "7-2", "nilai": 50, "alasan": "alasan lengkap disini"},
+    {"no": 8, "nama": "Tuntutan Fisik", "level": "8-2", "nilai": 20, "alasan": "alasan lengkap disini"},
+    {"no": 9, "nama": "Lingkungan Kerja", "level": "9-2", "nilai": 20, "alasan": "alasan lengkap disini"}
+  ],
+  "catatan": "catatan dan rekomendasi disini"
+}
+Pastikan nilai yang digunakan SESUAI dengan tabel nilai FES diatas.
+Berikan HANYA JSON, tanpa teks lain.`;
+    } else {
+        return `Anda adalah HRD Manager ahli Job Evaluation FES Manajerial.
+Analisis jabatan berikut dan berikan penilaian FES.
+
+JABATAN: ${namaJabatan}
+UNIT KERJA: ${unitKerja}
+URAIAN: ${uraian}
+
+NILAI FES MANAJERIAL:
+F1-RuangLingkup: 1-2(660),1-2+(995),1-3(1250),1-4(1495),1-5(1665)
+F2-Wewenang: 2-1(505),2-2(875),2-3(1015)
+F3-Koordinasi: 3-1(560),3-2(995),3-3(1250),3-4(1495),3-5(1665)
+F4-HubPersonal(SifatxTujuan):
+  Sifat1xTujuan1(100),Sifat1xTujuan2(185),Sifat1xTujuan3(230),Sifat1xTujuan4(270)
+  Sifat2xTujuan1(175),Sifat2xTujuan2(260),Sifat2xTujuan3(305),Sifat2xTujuan4(345)
+  Sifat3xTujuan1(245),Sifat3xTujuan2(330),Sifat3xTujuan3(375),Sifat3xTujuan4(415)
+  Sifat4xTujuan1(315),Sifat4xTujuan2(400),Sifat4xTujuan3(445),Sifat4xTujuan4(485)
+
+Berikan response dalam format JSON:
+{
+  "faktor": [
+    {"no": 1, "nama": "Ruang Lingkup Program & Dampak", "level": "1-3", "nilai": 1250, "alasan": "alasan lengkap"},
+    {"no": 2, "nama": "Wewenang Supervisi & Manajerial", "level": "2-2", "nilai": 875, "alasan": "alasan lengkap"},
+    {"no": 3, "nama": "Koordinasi & Pengintegrasian", "level": "3-2", "nilai": 995, "alasan": "alasan lengkap"},
+    {"no": 4, "nama": "Hubungan Personal", "level": "Sifat2xTujuan2", "nilai": 260, "alasan": "alasan lengkap"}
+  ],
+  "situasiKhusus": [
+    {"kondisi": "nama kondisi khusus jika ada", "poin": 50}
+  ],
+  "catatan": "catatan dan rekomendasi"
+}
+Berikan HANYA JSON, tanpa teks lain.`;
+    }
+}
+
+// =============================================
+// CALL GROQ API
+// =============================================
+async function callGroqAPI(apiKey, prompt) {
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${apiKey}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            model: 'llama3-70b-8192',
+            messages: [{ role: 'user', content: prompt }],
+            temperature: 0.3,
+            max_tokens: 4000
+        })
+    });
+
+    if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.error?.message || 'API Error: ' + response.status);
+    }
+
+    const data = await response.json();
+    return data.choices[0].message.content;
+}
+
+// =============================================
+// PARSE AI RESPONSE
+// =============================================
+function parseAIResponse(responseText, namaJabatan, unitKerja, kategori) {
+    try {
+        const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+        if (!jsonMatch) throw new Error('Format response tidak valid');
+        
+        const parsed = JSON.parse(jsonMatch[0]);
+        let totalPoin = parsed.faktor.reduce((sum, f) => sum + f.nilai, 0);
+        
+        if
+          // Tambah situasi khusus jika manajerial
+        if (kategori === 'manajerial' && parsed.situasiKhusus) {
+            parsed.situasiKhusus.forEach(s => {
+                totalPoin += s.poin || 0;
+            });
+        }
+
+        const gradeInfo = getGradeByPoint(totalPoin);
+
+        return {
+            namaJabatan,
+            unitKerja,
+            kategori,
+            faktor: parsed.faktor,
+            situasiKhusus: parsed.situasiKhusus || [],
+            totalPoin,
+            gradeInfo,
+            catatan: parsed.catatan || '',
+            tanggal: new Date().toLocaleDateString('id-ID')
+        };
+    } catch (error) {
+        throw new Error('Gagal memproses response AI: ' + error.message);
+    }
+}
+
+// =============================================
+// GET GRADE BY POINT
+// =============================================
+function getGradeByPoint(totalPoin) {
+    let bestMatch = null;
+    
+    for (const grade of gradeData) {
+        if (totalPoin >= grade.minPoint && totalPoin <= grade.maxPoint) {
+            if (!bestMatch || grade.minPoint > bestMatch.minPoint) {
+                bestMatch = grade;
+            }
+        }
+    }
+    
+    if (!bestMatch) {
+        if (totalPoin < 300) {
+            bestMatch = gradeData[gradeData.length - 1];
+        } else {
+            bestMatch = gradeData[0];
+        }
+    }
+    
+    const gajiMid = Math.round((bestMatch.gajiMin + bestMatch.gajiMax) / 2);
+    
+    return {
+        grade: bestMatch.grade,
+        level: bestMatch.level,
+        minPoint: bestMatch.minPoint,
+        maxPoint: bestMatch.maxPoint,
+        gajiMin: bestMatch.gajiMin,
+        gajiMax: bestMatch.gajiMax,
+        gajiMid: gajiMid
+    };
+}
+
+// =============================================
+// FORMAT CURRENCY
+// =============================================
+function formatCurrency(amount) {
+    return new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+        minimumFractionDigits: 0
+    }).format(amount);
+}
+
+// =============================================
+// DISPLAY RESULT
+// =============================================
+function displayResult(result) {
+    // Info jabatan
+    document.getElementById('resultNamaJabatan').textContent = result.namaJabatan;
+    document.getElementById('resultUnitKerja').textContent = result.unitKerja;
+    document.getElementById('resultKategori').textContent = 
+        result.kategori === 'non-manajerial' ? 'Non Manajerial' : 'Manajerial';
+    document.getElementById('totalPoint').textContent = result.totalPoin;
+    document.getElementById('totalPointFoot').textContent = result.totalPoin;
+
+    // Tabel faktor
+    const tbody = document.getElementById('evalTableBody');
+    tbody.innerHTML = '';
+    
+    result.faktor.forEach((f, index) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${f.no || index + 1}</td>
+            <td><strong>${f.nama}</strong></td>
+            <td><span class="level-badge">Level ${f.level}</span></td>
+            <td><strong>${f.nilai}</strong></td>
+            <td>${f.alasan}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+
+    // Situasi khusus jika ada
+    if (result.situasiKhusus && result.situasiKhusus.length > 0) {
+        result.situasiKhusus.forEach(s => {
+            if (s.kondisi && s.poin > 0) {
+                const tr = document.createElement('tr');
+                tr.style.background = '#fff3cd';
+                tr.innerHTML = `
+                    <td>+</td>
+                    <td><strong>Situasi Khusus</strong></td>
+                    <td>${s.kondisi}</td>
+                    <td><strong>+${s.poin}</strong></td>
+                    <td>Tambahan poin situasi khusus</td>
+                `;
+                tbody.appendChild(tr);
+            }
+        });
+    }
+
+    // Grade & Salary
+    const g = result.gradeInfo;
+    document.getElementById('resultGrade').textContent = g.grade;
+    document.getElementById('resultLevel').textContent = g.level;
+    document.getElementById('resultRangePoint').textContent = `${g.minPoint} - ${g.maxPoint}`;
+    document.getElementById('resultGajiMin').textContent = formatCurrency(g.gajiMin);
+    document.getElementById('resultGajiMid').textContent = formatCurrency(g.gajiMid);
+    document.getElementById('resultGajiMax').textContent = formatCurrency(g.gajiMax);
+
+    // Catatan
+    document.getElementById('notesContent').innerHTML = 
+        `<p>${result.catatan}</p>`;
+
+    // Tampilkan hasil
+    document.getElementById('card-result').style.display = 'block';
+    document.getElementById('card-result').scrollIntoView({ behavior: 'smooth' });
+}
+
+// =============================================
+// EXPORT KE EXCEL
+// =============================================
+function exportToExcel() {
+    if (!currentResult) return;
+    
+    const r = currentResult;
+    const g = r.gradeInfo;
+    
+    const wsData = [
+        ['JOB EVALUATION - FACTOR EVALUATION SYSTEM (FES)'],
+        [''],
+        ['Nama Jabatan', r.namaJabatan],
+        ['Unit Kerja', r.unitKerja],
+        ['Kategori', r.kategori === 'non-manajerial' ? 'Non Manajerial' : 'Manajerial'],
+        ['Tanggal Evaluasi', r.tanggal],
+        [''],
+        ['DETAIL PENILAIAN PER FAKTOR'],
+        ['No', 'Faktor', 'Level', 'Nilai', 'Alasan Penilaian'],
+    ];
+
+    r.faktor.forEach((f, i) => {
+        wsData.push([i + 1, f.nama, `Level ${f.level}`, f.nilai, f.alasan]);
+    });
+
+    if (r.situasiKhusus && r.situasiKhusus.length > 0) {
+        r.situasiKhusus.forEach(s => {
+            if (s.kondisi && s.poin > 0) {
+                wsData.push(['+', 'Situasi Khusus', s.kondisi, s.poin, 'Tambahan poin situasi khusus']);
+            }
+        });
+    }
+
+    wsData.push(['', '', 'TOTAL POIN', r.totalPoin, '']);
+    wsData.push(['']);
+    wsData.push(['HASIL PENEMPATAN GRADE & GAJI']);
+    wsData.push(['Grade', g.grade]);
+    wsData.push(['Level Jabatan', g.level]);
+    wsData.push(['Range Point', `${g.minPoint} - ${g.maxPoint}`]);
+    wsData.push(['Gaji Minimum', g.gajiMin]);
+    wsData.push(['Gaji Midpoint', g.gajiMid]);
+    wsData.push(['Gaji Maximum', g.gajiMax]);
+    wsData.push(['']);
+    wsData.push(['CATATAN & REKOMENDASI']);
+    wsData.push([r.catatan]);
+
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
+
+    ws['!cols'] = [
+        { wch: 5 },
+        { wch: 35 },
+        { wch: 15 },
+        { wch: 10 },
+        { wch: 60 }
+    ];
+
+    XLSX.utils.book_append_sheet(wb, ws, 'Job Evaluation');
+    XLSX.writeFile(wb, `JobEval_${r.namaJabatan}_${r.tanggal}.xlsx`);
+}
+
+// =============================================
+// EXPORT SEMUA KE EXCEL
+// =============================================
+function exportAllToExcel() {
+    if (evaluationHistory.length === 0) {
+        alert('Belum ada data evaluasi!');
+        return;
+    }
+
+    const wsData = [
+        ['REKAP JOB EVALUATION - SEMUA JABATAN'],
+        [''],
+        ['No', 'Nama Jabatan', 'Unit Kerja', 'Kategori', 'Total Poin', 
+         'Grade', 'Level Jabatan', 'Range Point', 
+         'Gaji Min', 'Gaji Mid', 'Gaji Max', 'Tanggal']
+    ];
+
+    evaluationHistory.forEach((r, i) => {
+        const g = r.gradeInfo;
+        wsData.push([
+            i + 1,
+            r.namaJabatan,
+            r.unitKerja,
+            r.kategori === 'non-manajerial' ? 'Non Manajerial' : 'Manajerial',
+            r.totalPoin,
+            g.grade,
+            g.level,
+            `${g.minPoint} - ${g.maxPoint}`,
+            g.gajiMin,
+            g.gajiMid,
+            g.gajiMax,
+            r.tanggal
+        ]);
+    });
+
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
+
+    ws['!cols'] = [
+        { wch: 5 }, { wch: 30 }, { wch: 25 }, { wch: 15 },
+        { wch: 12 }, { wch: 10 }, { wch: 25 }, { wch: 15 },
+        { wch: 18 }, { wch: 18 }, { wch: 18 }, { wch: 15 }
+    ];
+
+    XLSX.utils.book_append_sheet(wb, ws, 'Rekap Semua Jabatan');
+    XLSX.writeFile(wb, `Rekap_JobEval_${new Date().toLocaleDateString('id-ID')}.xlsx`);
+}
+
+// =============================================
+// HISTORY FUNCTIONS
+// =============================================
+function saveToHistory(result) {
+    evaluationHistory.unshift(result);
+    if (evaluationHistory.length > 50) {
+        evaluationHistory = evaluationHistory.slice(0, 50);
+    }
+    localStorage.setItem('evalHistory', JSON.stringify(evaluationHistory));
+    loadHistory();
+}
+
+function loadHistory() {
+    const tbody = document.getElementById('historyTableBody');
+    if (!tbody) return;
+
+    if (evaluationHistory.length === 0) {
+        document.getElementById('card-history').style.display = 'none';
+        return;
+    }
+
+    document.getElementById('card-history').style.display = 'block';
+    tbody.innerHTML = '';
+
+    evaluationHistory.forEach((r, i) => {
+        const g = r.gradeInfo;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${i + 1}</td>
+            <td><strong>${r.namaJabatan}</strong></td>
+            <td>${r.unitKerja}</td>
+            <td>${r.kategori === 'non-manajerial' ? 'Non Manajerial' : 'Manajerial'}</td>
+            <td><strong>${r.totalPoin}</strong></td>
+            <td><span class="grade-badge">${g.grade}</span></td>
+            <td>${formatCurrency(g.gajiMin)}</td>
+            <td>${formatCurrency(g.gajiMax)}</td>
+            <td>
+                <button onclick="viewHistory(${i})" class="btn btn-primary btn-sm">
+                    <i class="fas fa-eye"></i>
+                </button>
+                <button onclick="deleteHistory(${i})" class="btn btn-danger btn-sm">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+function viewHistory(index) {
+    const result = evaluationHistory[index];
+    currentResult = result;
+    displayResult(result);
+}
+
+function deleteHistory(index) {
+    if (confirm('Hapus data ini?')) {
+        evaluationHistory.splice(index, 1);
+        localStorage.setItem('evalHistory', JSON.stringify(evaluationHistory));
+        loadHistory();
+    }
+}
+
+function clearHistory() {
+    if (confirm('Hapus semua riwayat evaluasi?')) {
+        evaluationHistory = [];
+        localStorage.setItem('evalHistory', JSON.stringify(evaluationHistory));
+        loadHistory();
+    }
+}
+
+// =============================================
+// RESET FORM
+// =============================================
+function resetForm() {
+    document.getElementById('namaJabatan').value = '';
+    document.getElementById('unitKerja').value = '';
+    document.getElementById('uraianJabatan').value = '';
+    document.querySelector('input[name="kategori"][value="non-manajerial"]').checked = true;
+    document.getElementById('card-result').style.display = 'none';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}          
