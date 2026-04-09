@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Evaluation System - FES</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-briefcase"></i>
+                <span>Job Evaluation System</span>
+            </div>
+            <div class="header-subtitle">Factor Evaluation System (FES)</div>
+        </div>
+    </header>
+
+    <main class="main-container">
+        
+        <!-- STEP 1: API KEY -->
+        <div class="card" id="card-api">
+            <div class="card-header">
+                <i class="fas fa-key"></i>
+                <h2>Step 1: Konfigurasi API</h2>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label>Groq API Key</label>
+                    <div class="input-group">
+                        <input type="password" id="apiKey" placeholder="Masukkan Groq API Key Anda..." />
+                        <button onclick="toggleApiKey()" class="btn-icon">
+                            <i class="fas fa-eye" id="eyeIcon"></i>
+                        </button>
+                    </div>
+                    <small>⚠️ API Key tersimpan di browser Anda dan tidak dikirim ke server manapun selain Groq</small>
+                </div>
+                <button onclick="saveApiKey()" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Simpan API Key
+                </button>
+                <div id="apiStatus" class="status-badge" style="display:none"></div>
+            </div>
+        </div>
+
+        <!-- STEP 2: INPUT -->
+        <div class="card" id="card-input">
+            <div class="card-header">
+                <i class="fas fa-file-alt"></i>
+                <h2>Step 2: Input Uraian Jabatan</h2>
+            </div>
+            <div class="card-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nama Jabatan</label>
+                        <input type="text" id="namaJabatan" placeholder="Contoh: General Affair Officer" />
+                    </div>
+                    <div class="form-group">
+                        <label>Unit Kerja / Departemen</label>
+                        <input type="text" id="unitKerja" placeholder="Contoh: HC & GA Department" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Kategori Jabatan</label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="kategori" value="non-manajerial" checked />
+                            <span>Non Manajerial / Fungsional</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="kategori" value="manajerial" />
+                            <span>Manajerial / Struktural</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Uraian Jabatan Lengkap</label>
+                    <textarea id="uraianJabatan" rows="15" placeholder="Paste uraian jabatan lengkap disini..."></textarea>
+                </div>
+                <div class="btn-group">
+                    <button onclick="analyzeJob()" class="btn btn-primary" id="btnAnalyze">
+                        <i class="fas fa-calculator"></i> Analisis & Hitung Job Point
+                    </button>
+                    <button onclick="resetForm()" class="btn btn-secondary">
+                        <i class="fas fa-redo"></i> Reset
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- LOADING -->
+        <div class="loading-container" id="loadingContainer" style="display:none">
+            <div class="loading-spinner"></div>
+            <p>Sedang menganalisis uraian jabatan...</p>
+            <small>Proses ini membutuhkan waktu 10-30 detik</small>
+        </div>
+
+        <!-- HASIL -->
+        <div class="card" id="card-result" style="display:none">
+            <div class="card-header">
+                <i class="fas fa-chart-bar"></i>
+                <h2>Step 3: Hasil Job Evaluation</h2>
+                <button onclick="exportToExcel()" class="btn btn-success btn-sm">
+                    <i class="fas fa-file-excel"></i> Export Excel
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="result-header">
+                    <div class="result-info">
+                        <h3 id="resultNamaJabatan"></h3>
+                        <p id="resultUnitKerja"></p>
+                        <span class="badge" id="resultKategori"></span>
+                    </div>
+                    <div class="result-score">
+                        <div class="score-circle">
+                            <span id="totalPoint">0</span>
+                            <small>Total Poin</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table class="eval-table" id="evalTable">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Faktor</th>
+                                <th>Level</th>
+                                <th>Nilai</th>
+                                <th>Alasan Penilaian</th>
+                            </tr>
+                        </thead>
+                        <tbody id="evalTableBody"></tbody>
+                        <tfoot>
+                            <tr class="total-row">
+                                <td colspan="3"><strong>TOTAL POIN</strong></td>
+                                <td><strong id="totalPointFoot">0</strong></td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+                <div class="grade-container">
+                    <h3><i class="fas fa-award"></i> Penempatan Grade & Range Gaji</h3>
+                    <div class="grade-cards">
+                        <div class="grade-card">
+                            <i class="fas fa-layer-group"></i>
+                            <label>Grade</label>
+                            <span id="resultGrade">-</span>
+                        </div>
+                        <div class="grade-card">
+                            <i class="fas fa-user-tie"></i>
+                            <label>Level Jabatan</label>
+                            <span id="resultLevel">-</span>
+                        </div>
+                        <div class="grade-card">
+                            <i class="fas fa-chart-line"></i>
+                            <label>Range Point</label>
+                            <span id="resultRangePoint">-</span>
+                        </div>
+                        <div class="grade-card salary-min">
+                            <i class="fas fa-money-bill-wave"></i>
+                            <label>Gaji Minimum</label>
+                            <span id="resultGajiMin">-</span>
+                        </div>
+                        <div class="grade-card salary-mid">
+                            <i class="fas fa-money-bill-wave"></i>
+                            <label>Gaji Midpoint</label>
+                            <span id="resultGajiMid">-</span>
+                        </div>
+                        <div class="grade-card salary-max">
+                            <i class="fas fa-money-bill-wave"></i>
+                            <label>Gaji Maximum</label>
+                            <span id="resultGajiMax">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="notes-container" id="notesContainer">
+                    <h3><i class="fas fa-sticky-note"></i> Catatan & Rekomendasi</h3>
+                    <div id="notesContent"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIWAYAT -->
+        <div class="card" id="card-history" style="display:none">
+            <div class="card-header">
+                <i class="fas fa-history"></i>
+                <h2>Riwayat Evaluasi</h2>
+                <button onclick="clearHistory()" class="btn btn-danger btn-sm">
+                    <i class="fas fa-trash"></i> Hapus Semua
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="table-container">
+                    <table class="eval-table">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Nama Jabatan</th>
+                                <th>Unit Kerja</th>
+                                <th>Kategori</th>
+                                <th>Total Poin</th>
+                                <th>Grade</th>
+                                <th>Gaji Min</th>
+                                <th>Gaji Max</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTableBody"></tbody>
+                    </table>
+                </div>
+                <button onclick="exportAllToExcel()" class="btn btn-success mt-2">
+                    <i class="fas fa-file-excel"></i> Export Semua ke Excel
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="footer">
+        <p>Job Evaluation System - Factor Evaluation System (FES) | HRD Tools</p>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
